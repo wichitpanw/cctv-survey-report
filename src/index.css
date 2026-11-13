@@ -1,0 +1,29 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@layer base {
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --primary: 47 100% 50%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 214 32% 91%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --border: 214 32% 91%;
+    --ring: 221 83% 53%;
+  }
+
+  body {
+    font-family: 'IBM Plex Sans Thai', 'Sarabun', system-ui, -apple-system, sans-serif;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+}
+
+.font-slide {
+  font-family: 'Sarabun', 'TH Sarabun New', 'IBM Plex Sans Thai', sans-serif;
+}

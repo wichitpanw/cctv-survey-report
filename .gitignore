@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.tmp-vite/
+*.local
+*.pptx
+.DS_Store
+Thumbs.db
