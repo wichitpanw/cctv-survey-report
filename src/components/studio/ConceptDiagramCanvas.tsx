@@ -187,13 +187,9 @@ export const DIAGRAM_NODE_SLOTS: DiagramNodeSlot[] = [
 ];
 
 export function getNodeImagePath(site: SurveySite, side: 'left' | 'right'): string {
-  if (side === 'right') {
-    return './assets/template/node-right-2cam.png';
-  }
   const cams = site.cameras.length;
-  if (cams <= 1) return './assets/template/node-left-1cam.png';
-  if (cams === 2) return './assets/template/node-left-2cam.png';
-  return './assets/template/node-left-3cam.png';
+  const count = cams <= 1 ? 1 : cams === 2 ? 2 : 3;
+  return `./assets/template/node-${side}-${count}cam.png`;
 }
 
 interface ConceptDiagramCanvasProps {

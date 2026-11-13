@@ -243,7 +243,7 @@ export const SAMPLE_PROJECT: SurveyProject = {
           polePhoto: './assets/sample/image46.jpg',
           viewPhoto: './assets/sample/image48.jpg',
           poleStickers: [
-            { id: 's6c1-cam', type: 'camera', label: 'CAM 1', x: 49, y: 6 },
+            { id: 's6c1-cam', type: 'camera', label: 'CAM 1', x: 49, y: 6, direction: 'right' },
             { id: 's6c1-lbl', type: 'cam-label', label: 'CAM 1', x: 25, y: 10 },
           ],
         },
@@ -258,7 +258,7 @@ export const SAMPLE_PROJECT: SurveyProject = {
           polePhoto: './assets/sample/image49.jpg',
           viewPhoto: './assets/sample/image50.jpg',
           poleStickers: [
-            { id: 's6c2-cam', type: 'camera', label: 'CAM 2', x: 41, y: 12 },
+            { id: 's6c2-cam', type: 'camera', label: 'CAM 2', x: 41, y: 12, direction: 'left' },
             { id: 's6c2-lbl', type: 'cam-label', label: 'CAM 2', x: 62, y: 14 },
             { id: 's6c2-cab', type: 'cabinet', label: 'ตู้จัดเก็บอุปกรณ์', x: 48, y: 27 },
             { id: 's6c2-cablbl', type: 'cabinet-label', label: 'ตู้จัดเก็บอุปกรณ์', x: 46, y: 37 },
@@ -275,7 +275,7 @@ export const SAMPLE_PROJECT: SurveyProject = {
           polePhoto: './assets/sample/image52.jpg',
           viewPhoto: './assets/sample/image53.jpg',
           poleStickers: [
-            { id: 's6c3-cam', type: 'camera', label: 'CAM 3', x: 60, y: 10 },
+            { id: 's6c3-cam', type: 'camera', label: 'CAM 3', x: 60, y: 10, direction: 'left' },
             { id: 's6c3-lbl', type: 'cam-label', label: 'CAM 3', x: 80, y: 13 },
           ],
         },
@@ -370,9 +370,9 @@ export const SAMPLE_PROJECT: SurveyProject = {
       sharedPolePhoto: './assets/sample/image57.jpg',
       sharedPoleStickers: [
         { id: 's9-pole', type: 'pole', label: 'เสาเหล็ก 4M', x: 74, y: 38, w: 4, h: 68 },
-        { id: 's9-cam1', type: 'camera', label: 'CAM 1', x: 66, y: 3 },
+        { id: 's9-cam1', type: 'camera', label: 'CAM 1', x: 66, y: 3, direction: 'left' },
         { id: 's9-lbl1', type: 'cam-label', label: 'CAM 1', x: 48, y: 11 },
-        { id: 's9-cam2', type: 'camera', label: 'CAM 2', x: 82, y: 4 },
+        { id: 's9-cam2', type: 'camera', label: 'CAM 2', x: 82, y: 4, direction: 'right' },
         { id: 's9-lbl2', type: 'cam-label', label: 'CAM 2', x: 96, y: 12 },
         { id: 's9-cab', type: 'cabinet', label: 'ตู้จัดเก็บอุปกรณ์', x: 74, y: 24 },
         { id: 's9-cablbl', type: 'cabinet-label', label: 'ตู้จัดเก็บอุปกรณ์', x: 86, y: 34 },

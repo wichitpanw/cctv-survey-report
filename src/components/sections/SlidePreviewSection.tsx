@@ -78,7 +78,15 @@ function renderStickerOverlay(stickers: StickerOverlay[]) {
     >
       {st.type === 'pole' && <div className="h-full w-full bg-red-600 opacity-90" />}
       {st.type === 'camera' && (
-        <img src="./assets/template/sticker-camera.png" alt="" className="h-6 w-8 object-contain" />
+        <img
+          src={
+            st.direction === 'left'
+              ? './assets/template/sticker-camera-left.png'
+              : './assets/template/sticker-camera.png'
+          }
+          alt={st.label || 'CAM'}
+          className="h-5 w-8 object-contain"
+        />
       )}
       {st.type === 'cabinet' && (
         <img src="./assets/template/sticker-cabinet.png" alt="" className="h-8 w-7 object-contain" />

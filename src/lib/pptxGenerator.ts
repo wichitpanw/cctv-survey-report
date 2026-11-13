@@ -43,6 +43,7 @@ interface TemplateAssets {
   coverCapsules: string;
   backCoverBg: string;
   stickerCamera: string;
+  stickerCameraLeft: string;
   stickerCabinet: string;
   stickerMeter: string;
   shopDrawingDefault: string;
@@ -53,7 +54,9 @@ interface TemplateAssets {
   nodeLeft1: string;
   nodeLeft2: string;
   nodeLeft3: string;
+  nodeRight1: string;
   nodeRight2: string;
+  nodeRight3: string;
 }
 
 async function loadTemplateAssets(): Promise<TemplateAssets> {
@@ -64,6 +67,7 @@ async function loadTemplateAssets(): Promise<TemplateAssets> {
     coverCapsules,
     backCoverBg,
     stickerCamera,
+    stickerCameraLeft,
     stickerCabinet,
     stickerMeter,
     shopDrawingDefault,
@@ -74,7 +78,9 @@ async function loadTemplateAssets(): Promise<TemplateAssets> {
     nodeLeft1,
     nodeLeft2,
     nodeLeft3,
+    nodeRight1,
     nodeRight2,
+    nodeRight3,
   ] = await Promise.all([
     urlToDataUrl('./assets/template/nt-logo-header.jpeg'),
     urlToDataUrl('./assets/template/nt-cyfence-footer.png'),
@@ -82,6 +88,7 @@ async function loadTemplateAssets(): Promise<TemplateAssets> {
     urlToDataUrl('./assets/template/cover-capsules.png'),
     urlToDataUrl('./assets/template/back-cover-bg.jpeg'),
     urlToDataUrl('./assets/template/sticker-camera.png'),
+    urlToDataUrl('./assets/template/sticker-camera-left.png'),
     urlToDataUrl('./assets/template/sticker-cabinet.png'),
     urlToDataUrl('./assets/template/sticker-meter.png'),
     urlToDataUrl('./assets/template/shop-drawing-default.png'),
@@ -92,7 +99,9 @@ async function loadTemplateAssets(): Promise<TemplateAssets> {
     urlToDataUrl('./assets/template/node-left-1cam.png'),
     urlToDataUrl('./assets/template/node-left-2cam.png'),
     urlToDataUrl('./assets/template/node-left-3cam.png'),
+    urlToDataUrl('./assets/template/node-right-1cam.png'),
     urlToDataUrl('./assets/template/node-right-2cam.png'),
+    urlToDataUrl('./assets/template/node-right-3cam.png'),
   ]);
 
   return {
@@ -102,6 +111,7 @@ async function loadTemplateAssets(): Promise<TemplateAssets> {
     coverCapsules,
     backCoverBg,
     stickerCamera,
+    stickerCameraLeft,
     stickerCabinet,
     stickerMeter,
     shopDrawingDefault,
@@ -112,7 +122,9 @@ async function loadTemplateAssets(): Promise<TemplateAssets> {
     nodeLeft1,
     nodeLeft2,
     nodeLeft3,
+    nodeRight1,
     nodeRight2,
+    nodeRight3,
   };
 }
 
@@ -217,9 +229,13 @@ function addPoleStickers(
       });
     } else if (st.type === 'camera' && assets.stickerCamera) {
       const w = 0.68;
-      const h = 0.48;
+      const h = 0.42;
+      const camData =
+        st.direction === 'left' && assets.stickerCameraLeft
+          ? assets.stickerCameraLeft
+          : assets.stickerCamera;
       slide.addImage({
-        data: assets.stickerCamera,
+        data: camData,
         x: px - w / 2,
         y: py - h / 2,
         w,
@@ -901,14 +917,17 @@ export async function generateSurveyPptx(project: SurveyProject): Promise<void> 
 
       // Authentic node group image (1/2/3 cameras + PoE Switch + Cabinet + ONU + 220VAC)
       const imgPath = getNodeImagePath(site, slot.side);
-      const nodeData =
-        imgPath.includes('right')
-          ? assets.nodeRight2
-          : imgPath.includes('1cam')
-          ? assets.nodeLeft1
+      const nodeData = imgPath.includes('right')
+        ? imgPath.includes('1cam')
+          ? assets.nodeRight1
           : imgPath.includes('2cam')
-          ? assets.nodeLeft2
-          : assets.nodeLeft3;
+          ? assets.nodeRight2
+          : assets.nodeRight3
+        : imgPath.includes('1cam')
+        ? assets.nodeLeft1
+        : imgPath.includes('2cam')
+        ? assets.nodeLeft2
+        : assets.nodeLeft3;
 
       if (nodeData) {
         s5.addImage({

@@ -64,7 +64,14 @@ export function SitesTableSection({
       layoutMode: 'combined',
       includeDetailSlides: true,
       sharedPoleStickers: [
-        { id: `st-${Date.now()}-1`, type: 'camera', label: 'CAM 1', x: 45, y: 12 },
+        {
+          id: `st-${Date.now()}-1`,
+          type: 'camera',
+          label: 'CAM 1',
+          x: 45,
+          y: 12,
+          direction: 'right',
+        },
         { id: `st-${Date.now()}-2`, type: 'cam-label', label: 'CAM 1', x: 25, y: 15 },
         { id: `st-${Date.now()}-3`, type: 'cabinet', label: 'ตู้จัดเก็บอุปกรณ์', x: 50, y: 32 },
         {
@@ -148,11 +155,14 @@ export function SitesTableSection({
 
   const setCameraCount = (site: SurveySite, count: number) => {
     const clamped = Math.max(1, Math.min(8, count));
+    const prevCount = site.cameras.length;
     const current = [...site.cameras];
+    const now = Date.now();
+
     if (clamped > current.length) {
       for (let i = current.length + 1; i <= clamped; i++) {
         current.push({
-          id: `${site.id}-c${Date.now()}-${i}`,
+          id: `${site.id}-c${now}-${i}`,
           camNumber: i,
           lat: site.lat,
           lng: site.lng,
@@ -160,15 +170,87 @@ export function SitesTableSection({
           cameraType: current[0]?.cameraType || 'Bullet 5MP',
           mountingType: current[0]?.mountingType || 'เสาการไฟฟ้า',
           poleStickers: [
-            { id: `pc-${Date.now()}-${i}-a`, type: 'camera', label: `CAM ${i}`, x: 50, y: 12 },
-            { id: `pc-${Date.now()}-${i}-b`, type: 'cam-label', label: `CAM ${i}`, x: 30, y: 15 },
+            {
+              id: `pc-${now}-${i}-a`,
+              type: 'camera',
+              label: `CAM ${i}`,
+              x: 50,
+              y: 12,
+              direction: 'right',
+            },
+            { id: `pc-${now}-${i}-b`, type: 'cam-label', label: `CAM ${i}`, x: 30, y: 15 },
           ],
         });
       }
     } else if (clamped < current.length) {
       current.length = clamped;
     }
-    updateSite(site.id, { cameras: current });
+
+    // Sync sharedPoleStickers (combined view) and satelliteStickers with camera count
+    let nextShared = site.sharedPoleStickers.filter((st) => {
+      if (st.type !== 'camera' && st.type !== 'cam-label') return true;
+      const m = st.label.match(/^CAM\s*(\d+)$/i);
+      return !m || Number(m[1]) <= clamped;
+    });
+    let nextSat = site.satelliteStickers.filter((st) => {
+      if (st.type !== 'cam-cone') return true;
+      const m = st.label.match(/^C(\d+)$/i);
+      return !m || Number(m[1]) <= clamped;
+    });
+
+    if (clamped > prevCount) {
+      for (let i = 1; i <= clamped; i++) {
+        const yPos = Math.min(82, 10 + (i - 1) * 11);
+        const dir: 'left' | 'right' = i % 2 === 1 ? 'left' : 'right';
+        if (
+          !nextShared.some(
+            (s) => s.type === 'camera' && s.label.toUpperCase() === `CAM ${i}`
+          )
+        ) {
+          nextShared.push({
+            id: `st-sync-${now}-${i}-cam`,
+            type: 'camera',
+            label: `CAM ${i}`,
+            x: dir === 'left' ? 38 : 62,
+            y: yPos,
+            direction: dir,
+          });
+        }
+        if (
+          !nextShared.some(
+            (s) => s.type === 'cam-label' && s.label.toUpperCase() === `CAM ${i}`
+          )
+        ) {
+          nextShared.push({
+            id: `st-sync-${now}-${i}-lbl`,
+            type: 'cam-label',
+            label: `CAM ${i}`,
+            x: dir === 'left' ? 22 : 78,
+            y: yPos,
+          });
+        }
+        if (
+          !nextSat.some(
+            (s) => s.type === 'cam-cone' && s.label.toUpperCase() === `C${i}`
+          )
+        ) {
+          nextSat.push({
+            id: `sat-sync-${now}-${i}`,
+            type: 'cam-cone',
+            label: `C${i}`,
+            x: Math.min(80, 44 + (i - 1) * 6),
+            y: Math.min(80, 44 + (i - 1) * 4),
+            rotation: dir === 'left' ? 180 : 0,
+          });
+        }
+      }
+    }
+
+    updateSite(site.id, {
+      cameras: current,
+      sharedPoleStickers: nextShared,
+      satelliteStickers: nextSat,
+    });
   };
 
   const updateSiteAllCameras = (siteId: string, patch: Partial<CameraItem>) => {

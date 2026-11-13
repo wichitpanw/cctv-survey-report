@@ -72,17 +72,19 @@ export function SiteDetailStudio({
   const addSticker = (
     target: 'shared-pole' | 'cam-pole' | 'satellite',
     type: StickerType,
-    label: string
+    label: string,
+    extra?: Partial<Pick<StickerOverlay, 'x' | 'y' | 'direction'>>
   ) => {
     const newSticker: StickerOverlay = {
       id: `st-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
       type,
       label,
-      x: 50,
-      y: type === 'pole' ? 45 : 35,
+      x: extra?.x ?? 50,
+      y: extra?.y ?? (type === 'pole' ? 45 : 35),
       w: type === 'pole' ? 4 : undefined,
       h: type === 'pole' ? 68 : undefined,
       rotation: type === 'cam-cone' ? 0 : undefined,
+      direction: extra?.direction ?? (type === 'camera' ? 'right' : undefined),
     };
 
     if (target === 'shared-pole') {
@@ -513,34 +515,38 @@ export function SiteDetailStudio({
                       </div>
 
                       <div className="flex flex-wrap gap-1.5">
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline"
-                          className="h-7 px-2 text-[11px]"
-                          onClick={() =>
-                            addSticker(
-                              'shared-pole',
-                              'camera',
-                              `CAM ${activeSite.cameras.length}`
-                            )
-                          }
-                        >
-                          <Plus className="h-3 w-3" /> รูปกล้อง
-                        </Button>
-                        {activeSite.cameras.map((c) => (
-                          <Button
-                            key={c.id}
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            className="h-7 px-2 text-[11px]"
-                            onClick={() =>
-                              addSticker('shared-pole', 'cam-label', `CAM ${c.camNumber}`)
-                            }
-                          >
-                            <Tag className="h-3 w-3" /> CAM {c.camNumber}
-                          </Button>
+                        {activeSite.cameras.map((c, idx) => (
+                          <React.Fragment key={c.id}>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              className="h-7 px-2 text-[11px]"
+                              onClick={() =>
+                                addSticker('shared-pole', 'camera', `CAM ${c.camNumber}`, {
+                                  x: idx % 2 === 0 ? 38 : 62,
+                                  y: Math.min(82, 12 + idx * 11),
+                                  direction: idx % 2 === 0 ? 'left' : 'right',
+                                })
+                              }
+                            >
+                              <Plus className="h-3 w-3" /> รูปกล้อง {c.camNumber}
+                            </Button>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              className="h-7 px-2 text-[11px]"
+                              onClick={() =>
+                                addSticker('shared-pole', 'cam-label', `CAM ${c.camNumber}`, {
+                                  x: idx % 2 === 0 ? 22 : 78,
+                                  y: Math.min(82, 12 + idx * 11),
+                                })
+                              }
+                            >
+                              <Tag className="h-3 w-3" /> ป้าย CAM {c.camNumber}
+                            </Button>
+                          </React.Fragment>
                         ))}
                         <Button
                           type="button"

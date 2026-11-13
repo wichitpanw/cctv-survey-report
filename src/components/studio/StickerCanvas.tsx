@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { RotateCw, Trash2, Move } from 'lucide-react';
+import { FlipHorizontal2, RotateCw, Trash2, Move } from 'lucide-react';
 import type { StickerOverlay } from '@/types/survey';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -73,6 +73,16 @@ export function StickerCanvas({
     );
   };
 
+  const toggleCameraDirection = () => {
+    if (!selectedSticker || selectedSticker.type !== 'camera') return;
+    const nextDir = selectedSticker.direction === 'left' ? 'right' : 'left';
+    onChange(
+      stickers.map((s) =>
+        s.id === selectedSticker.id ? { ...s, direction: nextDir } : s
+      )
+    );
+  };
+
   const deleteSelected = () => {
     if (!selectedSticker) return;
     onChange(stickers.filter((s) => s.id !== selectedSticker.id));
@@ -119,8 +129,9 @@ export function StickerCanvas({
                 width: st.type === 'pole' ? `${st.w ?? 4}%` : undefined,
                 height: st.type === 'pole' ? `${st.h ?? 65}%` : undefined,
               }}
+              title={st.label}
               className={cn(
-                'absolute cursor-grab active:cursor-grabbing transition-shadow',
+                'group absolute cursor-grab active:cursor-grabbing transition-shadow',
                 isSelected && 'ring-2 ring-blue-500 ring-offset-1 rounded'
               )}
             >
@@ -129,12 +140,26 @@ export function StickerCanvas({
               )}
 
               {st.type === 'camera' && (
-                <img
-                  src="./assets/template/sticker-camera.png"
-                  alt="CAM"
-                  className="h-9 w-12 object-contain pointer-events-none drop-shadow"
-                  draggable={false}
-                />
+                <div className="relative">
+                  <img
+                    src={
+                      st.direction === 'left'
+                        ? './assets/template/sticker-camera-left.png'
+                        : './assets/template/sticker-camera.png'
+                    }
+                    alt={st.label || 'CAM'}
+                    className="h-7 w-11 object-contain pointer-events-none drop-shadow"
+                    draggable={false}
+                  />
+                  <span
+                    className={cn(
+                      'pointer-events-none absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-slate-900/80 px-1 py-0 text-[9px] font-bold text-white transition-opacity',
+                      isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                    )}
+                  >
+                    {st.label}
+                  </span>
+                </div>
               )}
 
               {st.type === 'cabinet' && (
@@ -220,6 +245,18 @@ export function StickerCanvas({
             className="h-6 w-32 rounded border border-blue-200 bg-white px-2 text-xs"
             placeholder="ข้อความป้าย"
           />
+          {selectedSticker.type === 'camera' && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-6 px-2 text-xs"
+              onClick={toggleCameraDirection}
+            >
+              <FlipHorizontal2 className="h-3 w-3 mr-1" />
+              {selectedSticker.direction === 'left' ? 'หันซ้าย (คลิกกลับขวา)' : 'หันขวา (คลิกกลับซ้าย)'}
+            </Button>
+          )}
           {selectedSticker.type === 'cam-cone' && (
             <div className="flex items-center gap-1">
               <Button

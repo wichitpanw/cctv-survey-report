@@ -23,6 +23,7 @@ export interface StickerOverlay {
   w?: number; // Optional percentage width
   h?: number; // Optional percentage height
   rotation?: number; // Degrees for cam-cone
+  direction?: 'left' | 'right'; // Direction for single camera sticker
   color?: string;
 }
 
